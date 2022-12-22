@@ -1,5 +1,3 @@
-#!groovy
-
 pipeline {
 
   agent any
@@ -29,9 +27,8 @@ pipeline {
 
     stage("GITHUB") {
       steps {
-        git branch: 'staging',
-          credentialsId: 'gh-jenkins',
-          url: 'https://github.com/vicalmic/lab3.git'
+        git branch: 'master',
+          url: 'https://github.com/almightydreamer/lab34.git'
       }
     }
 
@@ -40,7 +37,7 @@ pipeline {
         echo "INFO: Build NUMBER ${BUILD_NUMBER}"
         echo "INFO: Build TAG ${BUILD_TAG}"
 
-        sh 'python3 -m venv "${BUILD_TAG}" && \
+        bat 'python -m venv "${BUILD_TAG}" && \
                     . ${BUILD_TAG}/bin/activate && \
                     ${BUILD_TAG}/bin/pip install --upgrade pip && \
                     ${BUILD_TAG}/bin/pip install -r requirements.txt && \
@@ -50,7 +47,7 @@ pipeline {
 
     stage("TEST_BACKEND") {
       steps {
-        sh '. ${BUILD_TAG}/bin/activate && python manage.py test && deactivate'
+        bat '. ${BUILD_TAG}/bin/activate && python manage.py test && deactivate'
       }
     }
 
@@ -80,7 +77,7 @@ pipeline {
 
       junit '**/test-reports/unittest/*.xml'
 
-      sh 'ls -lR test-reports/'
+      bat 'ls -lR test-reports/'
     }
 
     success {
